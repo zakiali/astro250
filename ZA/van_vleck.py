@@ -23,11 +23,11 @@ def plotter(inrms,outrms,log=False):
         print 'Dictionaries not the same size...Exiting'
         exit()
     if log:
-        for i in range(1,rng+1):
-            p.semilogy(n.log2(n.array(inputrms[i])),n.array(outputrms[i])/n.array(inputrms[i]),label='%d bit quantization'%(i))
+        for i in range(rng):
+            p.semilogy(n.log2(n.array(inputrms[i])),n.array(outputrms[i])/n.array(inputrms[i]),label='%d bit quantization'%(2**i))
     else:
-        for i in range(1,rng+1):
-            p.plot(n.log2(n.array(inputrms[i])),n.array(outputrms[i])/n.array(inputrms[i]),label='%d bit quantization'%(i))
+        for i in range(rng):
+            p.plot(n.log2(n.array(inputrms[i])),n.array(outputrms[i])/n.array(inputrms[i]),label='%d bit quantization'%(2**i))
     p.axhline(1, linestyle='--', color='k')
     p.title('Power Transfer function for 1,2,3,4 bit quantization')
     p.xlabel('log2 input_rms')
@@ -49,13 +49,13 @@ prange = 2**n.arange(-8,8,.01)
 #dictionaries to hold input rms and out put rms for different quant bits.
 inputrms = {}
 outputrms = {}
-for quant in range(1,5):
+for quant,bits in enumerate(2**n.arange(4)):
     inputrms[quant] = []
     outputrms[quant] = []
     for rms in prange:
         v = n.random.randn(1e4)*rms
         inputrms[quant].append(n.std(v))
-        qv = quantize(v,quant)
+        qv = quantize(v,bits)
         outputrms[quant].append(n.std(qv))
         
 plotter(inputrms,outputrms, log=opts.log)
